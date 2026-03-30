@@ -314,7 +314,8 @@ def _get_default_backend_url(provider: str) -> str:
     """
     default_urls = {
         "google": "https://generativelanguage.googleapis.com/v1beta",
-        "dashscope": "https://dashscope.aliyuncs.com/api/v1",
+        # 阿里百炼 DashScope 使用 coding 地址
+        "dashscope": "https://coding.dashscope.aliyuncs.com/v1",
         "openai": "https://api.openai.com/v1",
         "deepseek": "https://api.deepseek.com",
         "anthropic": "https://api.anthropic.com",
@@ -323,8 +324,8 @@ def _get_default_backend_url(provider: str) -> str:
         "302ai": "https://api.302.ai/v1",
     }
 
-    url = default_urls.get(provider, "https://dashscope.aliyuncs.com/compatible-mode/v1")
-    logger.info(f"🔧 [默认URL] {provider} -> {url}")
+    url = default_urls.get(provider, "https://coding.dashscope.aliyuncs.com/v1")
+    logger.info(f"🔧 [默认 URL] {provider} -> {url}")
     return url
 
 
@@ -341,6 +342,7 @@ def _get_default_provider_by_model(model_name: str) -> str:
         'qwen-max': 'dashscope',
         'qwen-plus-latest': 'dashscope',
         'qwen-max-longcontext': 'dashscope',
+        'qwen3.5-plus': 'dashscope',  # 新增 Qwen3.5 Plus
 
         # OpenAI
         'gpt-3.5-turbo': 'openai',
@@ -358,14 +360,26 @@ def _get_default_provider_by_model(model_name: str) -> str:
         'deepseek-chat': 'deepseek',
         'deepseek-coder': 'deepseek',
 
-        # 智谱AI
+        # 智谱 AI (Zhipu)
         'glm-4': 'zhipu',
         'glm-3-turbo': 'zhipu',
-        'chatglm3-6b': 'zhipu'
+        'chatglm3-6b': 'zhipu',
+        'glm-5': 'zhipu',  # 新增 GLM-5
+
+        # 月之暗面 (Moonshot/Kimi)
+        'moonshot-v1-8k': 'moonshot',
+        'moonshot-v1-32k': 'moonshot',
+        'moonshot-v1-128k': 'moonshot',
+        'kimi-k2.5': 'moonshot',  # 新增 Kimi K2.5
+
+        # MiniMax
+        'MiniMax-M2.5': 'minimax',  # 新增 MiniMax M2.5
+        'abab6.5': 'minimax',
+        'abab6.5s': 'minimax',
     }
 
     provider = model_provider_map.get(model_name, 'dashscope')  # 默认使用阿里百炼
-    logger.info(f"🔧 使用默认映射: {model_name} -> {provider}")
+    logger.info(f"🔧 使用默认映射：{model_name} -> {provider}")
     return provider
 
 

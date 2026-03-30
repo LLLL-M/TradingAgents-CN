@@ -347,6 +347,46 @@ DEFAULT_MODEL_CAPABILITIES: Dict[str, Dict[str, Any]] = {
         "performance_metrics": {"speed": 2, "cost": 2, "quality": 5},
         "description": "Moonshot V1 128K，超长上下文旗舰"
     },
+    
+    # ==================== 阿里通义千问 (Qwen) 新增模型 ====================
+    "qwen3.5-plus": {
+        "capability_level": 4,
+        "suitable_roles": [ModelRole.BOTH],
+        "features": [ModelFeature.TOOL_CALLING, ModelFeature.LONG_CONTEXT, ModelFeature.REASONING],
+        "recommended_depths": ["标准", "深度", "全面"],
+        "performance_metrics": {"speed": 4, "cost": 3, "quality": 5},
+        "description": "通义千问 3.5 Plus，增强版专业模型"
+    },
+    
+    # ==================== 智谱 AI (GLM) 新增模型 ====================
+    "glm-5": {
+        "capability_level": 5,
+        "suitable_roles": [ModelRole.DEEP_ANALYSIS],
+        "features": [ModelFeature.TOOL_CALLING, ModelFeature.LONG_CONTEXT, ModelFeature.REASONING],
+        "recommended_depths": ["深度", "全面"],
+        "performance_metrics": {"speed": 3, "cost": 2, "quality": 5},
+        "description": "智谱 GLM-5，最新旗舰模型"
+    },
+    
+    # ==================== 月之暗面 (Kimi) 新增模型 ====================
+    "kimi-k2.5": {
+        "capability_level": 4,
+        "suitable_roles": [ModelRole.BOTH],
+        "features": [ModelFeature.TOOL_CALLING, ModelFeature.LONG_CONTEXT, ModelFeature.REASONING],
+        "recommended_depths": ["标准", "深度", "全面"],
+        "performance_metrics": {"speed": 4, "cost": 3, "quality": 4},
+        "description": "Kimi K2.5，长上下文增强版"
+    },
+    
+    # ==================== MiniMax 新增模型 ====================
+    "MiniMax-M2.5": {
+        "capability_level": 4,
+        "suitable_roles": [ModelRole.BOTH],
+        "features": [ModelFeature.TOOL_CALLING, ModelFeature.LONG_CONTEXT, ModelFeature.REASONING],
+        "recommended_depths": ["标准", "深度", "全面"],
+        "performance_metrics": {"speed": 4, "cost": 3, "quality": 4},
+        "description": "MiniMax M2.5，高性能通用模型"
+    },
 }
 
 
@@ -455,4 +495,3 @@ def parse_aggregator_model(model_name: str) -> Tuple[str, str]:
         parts = model_name.split("/", 1)
         return parts[0], parts[1]
     return "", model_name
-

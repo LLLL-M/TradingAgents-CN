@@ -3,7 +3,8 @@
 # 支持多架构: amd64, arm64
 
 # 使用 Debian Bookworm (稳定版) 而不是 Trixie (测试版)
-FROM python:3.10-slim-bookworm
+# 使用官方源，不依赖镜像加速器
+FROM python:3.10-slim-bookworm AS base
 
 # 获取构建架构信息
 ARG TARGETARCH
@@ -21,12 +22,16 @@ WORKDIR /app
 # - wkhtmltopdf: 从官方下载（用于 PDF 生成）
 # - 中文字体: 用于 PDF 中文显示
 RUN mkdir -p /app/logs /app/data /app/config && \
+    # 配置使用清华镜像源（国内加速）
+    echo 'deb https://mirrors.tuna.tsinghua.edu.cn/debian/ bookworm main contrib non-free non-free-firmware' > /etc/apt/sources.list && \
+    echo 'deb https://mirrors.tuna.tsinghua.edu.cn/debian/ bookworm-updates main contrib non-free non-free-firmware' >> /etc/apt/sources.list && \
+    echo 'deb https://mirrors.tuna.tsinghua.edu.cn/debian-security bookworm-security main contrib non-free non-free-firmware' >> /etc/apt/sources.list && \
     # 配置 apt 重试和超时
     echo 'Acquire::Retries "3";' > /etc/apt/apt.conf.d/80-retries && \
     echo 'Acquire::http::Timeout "30";' >> /etc/apt/apt.conf.d/80-retries && \
     echo 'Acquire::https::Timeout "30";' >> /etc/apt/apt.conf.d/80-retries && \
-    # 更新软件源，允许失败后继续
-    (apt-get update || apt-get update || apt-get update) && \
+    # 更新软件源
+    apt-get update && \
     apt-get install -y --no-install-recommends \
         ca-certificates \
         curl \

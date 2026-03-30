@@ -1181,15 +1181,15 @@ class DataSourceManager:
             return self._try_fallback_sources(symbol, start_date, end_date, period)
 
     def _get_tushare_data(self, symbol: str, start_date: str, end_date: str, period: str = "daily") -> str:
-        """使用Tushare获取多周期数据 - 使用provider + 统一缓存"""
-        logger.debug(f"📊 [Tushare] 调用参数: symbol={symbol}, start_date={start_date}, end_date={end_date}, period={period}")
+        """使用 Tushare 获取多周期数据 - 使用 provider + 统一缓存"""
+        logger.debug(f"📊 [Tushare] 调用参数：symbol={symbol}, start_date={start_date}, end_date={end_date}, period={period}")
 
         # 添加详细的股票代码追踪日志
-        logger.info(f"🔍 [股票代码追踪] _get_tushare_data 接收到的股票代码: '{symbol}' (类型: {type(symbol)})")
-        logger.info(f"🔍 [股票代码追踪] 股票代码长度: {len(str(symbol))}")
-        logger.info(f"🔍 [股票代码追踪] 股票代码字符: {list(str(symbol))}")
-        logger.info(f"🔍 [DataSourceManager详细日志] _get_tushare_data 开始执行")
-        logger.info(f"🔍 [DataSourceManager详细日志] 当前数据源: {self.current_source.value}")
+        logger.info(f"🔍 [股票代码追踪] _get_tushare_data 接收到的股票代码：'{symbol}' (类型：{type(symbol)})")
+        logger.info(f"🔍 [股票代码追踪] 股票代码长度：{len(str(symbol))}")
+        logger.info(f"🔍 [股票代码追踪] 股票代码字符：{list(str(symbol))}")
+        logger.info(f"🔍 [DataSourceManager 详细日志] _get_tushare_data 开始执行")
+        logger.info(f"🔍 [DataSourceManager 详细日志] 当前数据源：{self.current_source.value}")
 
         start_time = time.time()
         try:
@@ -1219,13 +1219,13 @@ class DataSourceManager:
                 # 格式化返回
                 return self._format_stock_data_response(cached_data, symbol, stock_name, start_date, end_date)
 
-            # 2. 缓存未命中，从provider获取
-            logger.info(f"🔍 [股票代码追踪] 调用 tushare_provider，传入参数: symbol='{symbol}'")
-            logger.info(f"🔍 [DataSourceManager详细日志] 开始调用tushare_provider...")
+            # 2. 缓存未命中，从 provider 获取
+            logger.info(f"🔍 [股票代码追踪] 调用 tushare_provider，传入参数：symbol='{symbol}'")
+            logger.info(f"🔍 [DataSourceManager 详细日志] 开始调用 tushare_provider...")
 
             provider = self._get_tushare_adapter()
             if not provider:
-                return f"❌ Tushare提供器不可用"
+                return f"❌ Tushare 提供器不可用"
 
             # 使用异步方法获取历史数据
             import asyncio
@@ -1253,24 +1253,26 @@ class DataSourceManager:
                 result = self._format_stock_data_response(data, symbol, stock_name, start_date, end_date)
 
                 duration = time.time() - start_time
-                logger.info(f"🔍 [DataSourceManager详细日志] 调用完成，耗时: {duration:.3f}秒")
-                logger.info(f"🔍 [股票代码追踪] 返回结果前200字符: {result[:200] if result else 'None'}")
-                logger.debug(f"📊 [Tushare] 调用完成: 耗时={duration:.2f}s, 结果长度={len(result) if result else 0}")
+                logger.info(f"🔍 [DataSourceManager 详细日志] 调用完成，耗时：{duration:.3f}秒")
+                logger.info(f"🔍 [股票代码追踪] 返回结果前 200 字符：{result[:200] if result else 'None'}")
+                logger.debug(f"📊 [Tushare] 调用完成：耗时={duration:.2f}s, 结果长度={len(result) if result else 0}")
 
                 return result
             else:
                 result = f"❌ 未获取到{symbol}的有效数据"
                 duration = time.time() - start_time
                 logger.warning(f"⚠️ [Tushare] 未获取到数据，耗时={duration:.2f}s")
+                # 🔧 修复：直接返回字符串，不要返回 tuple
                 return result
         except Exception as e:
             duration = time.time() - start_time
-            logger.error(f"❌ [Tushare] 调用失败: {e}, 耗时={duration:.2f}s", exc_info=True)
-            logger.error(f"❌ [DataSourceManager详细日志] 异常类型: {type(e).__name__}")
-            logger.error(f"❌ [DataSourceManager详细日志] 异常信息: {str(e)}")
+            logger.error(f"❌ [Tushare] 调用失败：{e}, 耗时={duration:.2f}s", exc_info=True)
+            logger.error(f"❌ [DataSourceManager 详细日志] 异常类型：{type(e).__name__}")
+            logger.error(f"❌ [DataSourceManager 详细日志] 异常信息：{str(e)}")
             import traceback
-            logger.error(f"❌ [DataSourceManager详细日志] 异常堆栈: {traceback.format_exc()}")
-            raise
+            logger.error(f"❌ [DataSourceManager 详细日志] 异常堆栈：{traceback.format_exc()}")
+            # 🔧 修复：返回字符串而不是抛出异常
+            return f"❌ Tushare 获取{symbol}数据失败：{e}"
 
     def _get_akshare_data(self, symbol: str, start_date: str, end_date: str, period: str = "daily") -> str:
         """使用AKShare获取多周期数据 - 包含技术指标计算"""

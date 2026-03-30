@@ -254,13 +254,21 @@ class TradingAgentsLogger:
         logger.addHandler(file_handler)
 
     def _add_error_handler(self, logger: logging.Logger):
-        """添加错误日志处理器（只记录WARNING及以上级别）"""
+        """添加错误日志处理器（只记录 WARNING 及以上级别）"""
         # 检查错误处理器是否启用
         error_config = self.config['handlers'].get('error', {})
         if not error_config.get('enabled', True):
             return
 
-        log_dir = Path(error_config.get('directory', self.config['handlers']['file']['directory']))
+        # 获取日志目录，优先使用 error 配置中的 directory，否则使用 file 配置中的 directory
+        error_dir = error_config.get('directory')
+        if not error_dir:
+            error_dir = self.config['handlers']['file']['directory']
+        
+        # 确保目录存在
+        log_dir = Path(error_dir)
+        log_dir.mkdir(parents=True, exist_ok=True)
+        
         error_log_file = log_dir / error_config.get('filename', 'error.log')
 
         # 使用RotatingFileHandler进行日志轮转
